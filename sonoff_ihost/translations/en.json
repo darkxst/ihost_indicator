@@ -1,0 +1,13 @@
+{
+    "config": {
+      "step": {
+        "user": {
+            "title": "Pairing Mode",
+            "description": "Hardware integration for indicator and buttons",
+            "data": {
+                "pairing": "Pairing mode"
+            }
+        }
+      }
+    }
+}
