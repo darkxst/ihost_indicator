@@ -58,7 +58,7 @@ class Hub:
             await self._hass.services.async_call('zha', 'permit', {'duration': delay})
         elif self._pair_mode == 1:
             payload = f'{{"value": true, "time": {delay}}}'
-            mqtt.async_publish(self._hass, "zigbee2mqtt/bridge/request/permit_join", payload)
+            await mqtt.async_publish(self._hass, "zigbee2mqtt/bridge/request/permit_join", payload)
         else:
             return
 
