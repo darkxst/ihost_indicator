@@ -6,6 +6,9 @@
           "description": "Hardware integration for indicator and buttons",
           "data": {
               "pairing": "Pairing mode"
+          },
+          "data_description": {
+            "pairing": "Select the pairing mode for the pairing button. Select User if you wish to use this as a normal button."
           }
       }
     }
