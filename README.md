@@ -11,7 +11,7 @@ Home Assistant custom integration for controlling RGB indicator and buttons.
   * `sonoff_ihost_button_reset`
 
 ## Installation
-Install into
+Install `sonoff_ihost` folder into:  
 ```~/config/custom_components/```  
 Restart, then `Add integration` and find `iHost indicator`
 
