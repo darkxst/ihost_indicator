@@ -1,0 +1,16 @@
+{
+  "config": {
+    "step": {
+      "user": {
+          "title": "Modo de Pareamento",
+          "description": "Integração do Hardware para indicadores e botões ",
+          "data": {
+              "pairing": "modo de pareamento"
+          },
+          "data_description": {
+            "pairing": "Selecione o modo de pareamento para o botão de pareamento. Selecione a opção User se você deseja usar o botão com um botão normal."
+          }
+      }
+    }
+  }
+}
