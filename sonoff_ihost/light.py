@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import colorsys
 import logging
 
 from .const import DOMAIN
@@ -100,10 +101,14 @@ class iHostLight(LightEntity):
 
         if self._effect:
             effect_idx = self._hub.yc.effect_list().index(self._effect)
-        
-        _LOGGER.debug(f"rgb data {self._rgb_color}, {self._brightness}, {self._effect}")
 
-        self._hub.yc.light_on(self._idx, effect_idx, self._rgb_color)
+        rgb = self._rgb_color
+        if self._brightness < 255:
+            rgb = self.scale_rgb(rgb, self._brightness)
+        
+        _LOGGER.debug(f"rgb data {self._rgb_color}, {rgb}, {self._brightness}, {self._effect}")
+
+        self._hub.yc.light_on(self._idx, effect_idx, rgb)
         
         self._state = True
         if effect_idx == 6:
@@ -115,4 +120,17 @@ class iHostLight(LightEntity):
         """Set inicator light to turn off."""
         _LOGGER.info("turn off indicator")
         self._state = False
+        self.async_write_ha_state()
+
         self._hub.yc.light_off(self._idx)
+
+    def scale_rgb(self, rgb, brightness):
+        """Scale rgb values based on brightness"""
+        rgb = tuple(x/255.0 for x in rgb)
+        h, s, v = colorsys.rgb_to_hsv(*rgb)
+
+        # Scale brightness
+        v *= brightness / 255.0
+
+        rgb_scaled = tuple(int(x*255) for x in colorsys.hsv_to_rgb(h, s, v))
+        return rgb_scaled
