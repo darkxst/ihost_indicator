@@ -13,7 +13,7 @@ from __future__ import annotations
 import asyncio
 import logging
 
-from .const import BUTTON_LIST, DOMAIN
+from .const import DOMAIN
 from homeassistant.components.switch import SwitchDeviceClass, SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -43,7 +43,7 @@ class iHostSwitch(SwitchEntity):
 
     def __init__(self, hass, button_id, hub): 
         self._button_id = button_id
-        self._attr_name = BUTTON_LIST[button_id]
+        self._attr_name = hub.BUTTON_LIST[button_id]
         self._attr_should_poll = False
         self._attr_unique_id = f"{DOMAIN}_button_{button_id}"
         self._hass = hass

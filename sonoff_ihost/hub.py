@@ -12,7 +12,6 @@ from homeassistant.const import (
     EVENT_HOMEASSISTANT_STOP,
 )
 from .const import (
-    BUTTON_LIST,
     CONF_BRIGHTNESS,
     CONF_COLOR,
     CONF_PAIRING,
@@ -27,6 +26,7 @@ class Hub:
     """YC1175 Hub providing indicator control."""
     def __init__(self, hass: HomeAssistant, entry_data) -> None:
         self.yc = indicator.HassAPI()
+        self.BUTTON_LIST = self.yc.button_list()
         self._pair_mode = int(entry_data[CONF_PAIRING])
         self._defaults = {
             CONF_BRIGHTNESS: int(entry_data[CONF_BRIGHTNESS] * 2.55),
@@ -63,7 +63,7 @@ class Hub:
         _LOGGER.info(f"Button pressed: {idx}, type: {event}")
 
     async def async_fire_event(self, id):
-        name = BUTTON_LIST[id]
+        name = self.BUTTON_LIST[id]
         self._hass.bus.async_fire(f"{EVENT_SPECIAL_BUTTON}_{name}", {'button_id': id})
     
     async def enable_pairing(self, entity):
