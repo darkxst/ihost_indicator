@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 import colorsys
 import logging
+from typing import Any
 
 from .const import DOMAIN
 from yc1175_indicator import indicator
@@ -64,12 +65,12 @@ class iHostLight(LightEntity):
         return ColorMode.RGB
 
     @property
-    def effect_list(self):
+    def effect_list(self) -> list[str]:
         effect_list = self._hub.yc.effect_list()
         return effect_list[1:]
 
     @property
-    def effect(self):
+    def effect(self) -> str:
         """Return the current effect of this light."""
         return self._effect
 
@@ -124,7 +125,7 @@ class iHostLight(LightEntity):
 
         self._hub.yc.light_off(self._idx)
 
-    def scale_rgb(self, rgb, brightness):
+    def scale_rgb(self, rgb:tuple[int, int, int], brightness:int) -> tuple[int, int, int]:
         """Scale rgb values based on brightness"""
         rgb = tuple(x/255.0 for x in rgb)
         h, s, v = colorsys.rgb_to_hsv(*rgb)

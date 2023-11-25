@@ -10,8 +10,8 @@ Power and Reset not implemented here.
 """
 from __future__ import annotations
 
-import asyncio
 import logging
+from typing import Any
 
 from .const import DOMAIN
 from homeassistant.components.switch import SwitchDeviceClass, SwitchEntity
@@ -41,7 +41,7 @@ class iHostSwitch(SwitchEntity):
     """Switch based on a button press from my device."""
     _attr_device_class = SwitchDeviceClass.SWITCH
 
-    def __init__(self, hass, button_id, hub): 
+    def __init__(self, hass: HomeAssistant, button_id:int, hub):
         self._button_id = button_id
         self._attr_name = hub.BUTTON_LIST[button_id]
         self._attr_should_poll = False
@@ -51,16 +51,16 @@ class iHostSwitch(SwitchEntity):
         self._state = False
 
     @property
-    def is_on(self):
+    def is_on(self) -> bool:
         """Return whether switch is on."""
         return self._state
     
     @property
-    def button_id(self):
+    def button_id(self) -> int:
         """Return button id."""
         return self._button_id
 
-    async def async_turn_on(self, **kwargs):
+    async def async_turn_on(self, **kwargs:Any) -> None:
         """Turn the switch on."""
         self._state = True
         self.async_write_ha_state()
@@ -69,7 +69,7 @@ class iHostSwitch(SwitchEntity):
             self._hass.async_create_task(self._hub.enable_pairing(entity=self))
         _LOGGER.info(f"Button {self._button_id} is on: {self.is_on}")
 
-    async def async_turn_off(self, **kwargs):
+    async def async_turn_off(self, **kwargs:Any) -> None:
         """Turn the switch off."""
         self._state = False
         self.async_write_ha_state()
