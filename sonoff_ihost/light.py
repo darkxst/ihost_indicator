@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import asyncio
+import colorsys
 import logging
+from typing import Any
 
 from .const import DOMAIN
 from yc1175_indicator import indicator
@@ -42,16 +44,16 @@ class iHostLight(LightEntity):
         self._idx = 4
         self._hub = hub
         self._name = "indicator"
-        self._brightness = 255
-        self._effect = "on"
-        self._rgb_color = (0,0,255)
-        self._state = True
+        self._brightness = hub.defaults("brightness")
+        self._effect = None
+        self._rgb_color = hub.defaults("color")
+        self._state = not hub.defaults("state")
         self._color_mode = ColorMode.RGB
         self._attr_unique_id = f"{DOMAIN}_{self._name}"
         self._attr_should_poll = False
         self._attr_supported_color_modes = {self.color_mode}
         self._attr_supported_features |= LightEntityFeature.EFFECT
-    
+
     @property
     def brightness(self) -> int | None:
         """Return the brightness of this light. """
@@ -63,12 +65,12 @@ class iHostLight(LightEntity):
         return ColorMode.RGB
 
     @property
-    def effect_list(self):
+    def effect_list(self) -> list[str]:
         effect_list = self._hub.yc.effect_list()
         return effect_list[1:]
 
     @property
-    def effect(self):
+    def effect(self) -> str:
         """Return the current effect of this light."""
         return self._effect
 
@@ -90,20 +92,25 @@ class iHostLight(LightEntity):
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Set inicator light to turn off."""
 
-        self._brightness = kwargs.get(ATTR_BRIGHTNESS, 255)
+        if ATTR_BRIGHTNESS in kwargs:
+            self._brightness = kwargs[ATTR_BRIGHTNESS]
 
         if ATTR_EFFECT in kwargs:
             self._effect = kwargs[ATTR_EFFECT]
 
         if ATTR_RGB_COLOR in kwargs:
             self._rgb_color = kwargs[ATTR_RGB_COLOR]
-
+        effect_idx = 1
         if self._effect:
             effect_idx = self._hub.yc.effect_list().index(self._effect)
-        
-        _LOGGER.debug(f"rgb data {self._rgb_color}, {self._brightness}, {self._effect}")
 
-        self._hub.yc.light_on(self._idx, effect_idx, self._rgb_color)
+        rgb = self._rgb_color
+        if self._brightness < 255:
+            rgb = self.scale_rgb(rgb, self._brightness)
+        
+        _LOGGER.debug(f"rgb data {self._rgb_color}, {rgb}, {self._brightness}, {self._effect}")
+
+        self._hub.yc.light_on(self._idx, effect_idx, rgb)
         
         self._state = True
         if effect_idx == 6:
@@ -115,4 +122,17 @@ class iHostLight(LightEntity):
         """Set inicator light to turn off."""
         _LOGGER.info("turn off indicator")
         self._state = False
+        self.async_write_ha_state()
+
         self._hub.yc.light_off(self._idx)
+
+    def scale_rgb(self, rgb:tuple[int, int, int], brightness:int) -> tuple[int, int, int]:
+        """Scale rgb values based on brightness"""
+        rgb = tuple(x/255.0 for x in rgb)
+        h, s, v = colorsys.rgb_to_hsv(*rgb)
+
+        # Scale brightness
+        v *= brightness / 255.0
+
+        rgb_scaled = tuple(int(x*255) for x in colorsys.hsv_to_rgb(h, s, v))
+        return rgb_scaled

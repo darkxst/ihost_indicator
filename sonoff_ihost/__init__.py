@@ -11,7 +11,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Setup indicator from config entry"""
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = hub.Hub(hass, entry.data[CONF_PAIRING])
+    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = hub.Hub(hass, entry.data)
     yc_hub = hass.data[DOMAIN][entry.entry_id]
     await yc_hub.handle_setup()
     yc_hub.yc.register_event_callback(yc_hub.button_callback)
