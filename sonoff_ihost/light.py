@@ -45,7 +45,7 @@ class iHostLight(LightEntity):
         self._hub = hub
         self._name = "indicator"
         self._brightness = hub.defaults("brightness")
-        self._effect = "on"
+        self._effect = None
         self._rgb_color = hub.defaults("color")
         self._state = not hub.defaults("state")
         self._color_mode = ColorMode.RGB
@@ -53,7 +53,7 @@ class iHostLight(LightEntity):
         self._attr_should_poll = False
         self._attr_supported_color_modes = {self.color_mode}
         self._attr_supported_features |= LightEntityFeature.EFFECT
-    
+
     @property
     def brightness(self) -> int | None:
         """Return the brightness of this light. """
@@ -92,14 +92,15 @@ class iHostLight(LightEntity):
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Set inicator light to turn off."""
 
-        self._brightness = kwargs.get(ATTR_BRIGHTNESS, 255)
+        if ATTR_BRIGHTNESS in kwargs:
+            self._brightness = kwargs[ATTR_BRIGHTNESS]
 
         if ATTR_EFFECT in kwargs:
             self._effect = kwargs[ATTR_EFFECT]
 
         if ATTR_RGB_COLOR in kwargs:
             self._rgb_color = kwargs[ATTR_RGB_COLOR]
-
+        effect_idx = 1
         if self._effect:
             effect_idx = self._hub.yc.effect_list().index(self._effect)
 
