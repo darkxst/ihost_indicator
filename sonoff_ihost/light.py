@@ -43,10 +43,10 @@ class iHostLight(LightEntity):
         self._idx = 4
         self._hub = hub
         self._name = "indicator"
-        self._brightness = 255
+        self._brightness = hub.defaults("brightness")
         self._effect = "on"
-        self._rgb_color = (0,0,255)
-        self._state = True
+        self._rgb_color = hub.defaults("color")
+        self._state = not hub.defaults("state")
         self._color_mode = ColorMode.RGB
         self._attr_unique_id = f"{DOMAIN}_{self._name}"
         self._attr_should_poll = False

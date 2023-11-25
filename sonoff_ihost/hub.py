@@ -13,6 +13,10 @@ from homeassistant.const import (
 )
 from .const import (
     BUTTON_LIST,
+    CONF_BRIGHTNESS,
+    CONF_COLOR,
+    CONF_PAIRING,
+    CONF_STATE,
     EVENT_SPECIAL_BUTTON,
     PAIRING_MODES,
 )
@@ -21,9 +25,15 @@ _LOGGER = logging.getLogger(__name__)
 
 class Hub:
     """YC1175 Hub providing indicator control."""
-    def __init__(self, hass: HomeAssistant, pair_mode: str) -> None:
+    def __init__(self, hass: HomeAssistant, entry_data) -> None:
         self.yc = indicator.HassAPI()
-        self._pair_mode = int(pair_mode)
+        self._pair_mode = int(entry_data[CONF_PAIRING])
+        self._defaults = {
+            CONF_BRIGHTNESS: int(entry_data[CONF_BRIGHTNESS] * 2.55),
+            CONF_COLOR: tuple(entry_data[CONF_COLOR]),
+            CONF_STATE: entry_data[CONF_STATE]
+        }
+
         self._hass = hass
         self._id = "ihost"
         self.indicator = []
@@ -34,7 +44,11 @@ class Hub:
     def hub_id(self) -> str:
         """ID for hub."""
         return self._id
-    
+
+    def defaults(self, key):
+        """Default properties by key"""
+        return self._defaults[key]
+
     #@callback test later need to add import  callback from core
     async def button_callback(self, idx, event):
         """Callback fired by button press in yc1175-library"""
@@ -67,7 +81,7 @@ class Hub:
 
     async def handle_on_start(self, event):
         """ Turn on indicator on start"""
-        await self.indicator[0].async_turn_on()
+        await self.indicator[0].async_toggle()
         self.yc.light_on(0)
 
     async def handle_on_stop(self, event):
