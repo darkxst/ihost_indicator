@@ -10,10 +10,19 @@ Home Assistant custom integration for controlling RGB indicator and buttons.
   * `sonoff_ihost_button_power`
   * `sonoff_ihost_button_reset`
 
+## Screenshots
+Main Led configuration:
+
+![RGB_LED_CONFIG](/img/RGB_LED_CONFIG.JPG)
+
+Available configurations:
+![ihost_indicator_Settings](/img/ihost_indicator_Settings.png)
+
 ## Installation
 Install `sonoff_ihost` folder into:  
 ```~/config/custom_components/```  
 Restart, then `Add integration` and find `iHost indicator`
+See more in the [installation](installation.md) page.
 
 ## Support
 
