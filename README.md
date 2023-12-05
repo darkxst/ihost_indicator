@@ -12,6 +12,7 @@ Home Assistant custom integration for controlling RGB indicator and buttons.
 
 ## Screenshots
 Main Led configuration:
+
 ![RGB_LED_CONFIG](/img/RGB_LED_CONFIG.JPG)
 
 Available configurations:
