@@ -14,6 +14,7 @@ Home Assistant custom integration for controlling RGB indicator and buttons.
 Install `sonoff_ihost` folder into:  
 ```~/config/custom_components/```  
 Restart, then `Add integration` and find `iHost indicator`
+See more in the [installation](installation.md) page.
 
 ## Support
 
