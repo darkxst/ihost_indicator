@@ -16,4 +16,4 @@ This command will download and extract the latest release in the folder `~/confi
 
 3. then go to `Settings` > `Devices & Services` > + `ADD INTEGRATION`
 
-4. Find `iHost indicator`
+4. Find `iHost indicator` and install it
